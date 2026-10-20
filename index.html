@@ -3,1249 +3,614 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hari Khatri · 3D Developer Portfolio</title>
+    <title>Hari Khatri · Full-Stack Developer & Systems Builder</title>
+    
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Portfolio of Hari Khatri — BCA student and developer specializing in C/C++, Java, React, TypeScript, and interactive web simulations. Based in Mount Abu, Rajasthan." />
+    <meta name="keywords" content="Hari Khatri, Developer Portfolio, Silicon Dynasty, Caligo, Morph, C++, React, TypeScript, BCA Student" />
+    <meta name="author" content="Hari Khatri" />
+    
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hariacharyakhatri.github.io/Portfolio/" />
+    <meta property="og:title" content="Hari Khatri · Full-Stack Developer & Systems Builder" />
+    <meta property="og:description" content="Explore real projects, live browser games, and low-level software architecture by Hari Khatri." />
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest">
-    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-        /* ── Reset & Variables ── */
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Three.js (for high-performance 3D ambient constellation) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-        :root {
-            --bg-deep: #02040a;
-            --bg-surface: rgba(10, 16, 30, 0.65);
-            --bg-card: rgba(18, 28, 50, 0.55);
-            --bg-card-hover: rgba(26, 40, 70, 0.7);
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --accent-cyan: #22d3ee;
-            --accent-glow: rgba(59, 130, 246, 0.25);
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border-subtle: rgba(51, 65, 85, 0.4);
-            --border-glow: rgba(59, 130, 246, 0.3);
-            --radius-sm: 8px;
-            --radius-md: 14px;
-            --radius-lg: 24px;
-            --shadow-card: 0 12px 48px rgba(0, 0, 0, 0.5);
-            --transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-deep);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow: hidden;
-            /* managed by #ui-container */
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* ── 3D Canvas ── */
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            width: 100vw;
-            height: 100vh;
-            display: block;
-        }
-
-        /* ── UI Overlay ── */
-        #ui-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            height: 100vh;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-            background: transparent;
-        }
-
-        /* custom scrollbar */
-        #ui-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        #ui-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        #ui-container::-webkit-scrollbar-thumb {
-            background: var(--accent-blue);
-            border-radius: 12px;
-        }
-        #ui-container::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-purple);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 28px;
-        }
-
-        /* ── Navigation ── */
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(2, 4, 10, 0.7);
-            backdrop-filter: blur(20px) saturate(1.2);
-            border-bottom: 1px solid var(--border-subtle);
-            transition: var(--transition);
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 72px;
-            padding: 8px 0;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .brand {
-            font-size: 1.35rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: var(--text-primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .brand span {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .brand .dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-cyan);
-            box-shadow: 0 0 16px var(--accent-cyan);
-            -webkit-text-fill-color: initial;
-            animation: pulse-dot 2s infinite;
-        }
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.5;
-                transform: scale(0.8);
-            }
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 8px;
-            list-style: none;
-            flex-wrap: wrap;
-        }
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.78rem;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 100px;
-            transition: var(--transition);
-            letter-spacing: 0.01em;
-        }
-        .nav-links a:hover {
-            color: var(--text-primary);
-            background: rgba(59, 130, 246, 0.08);
-        }
-
-        /* ── Buttons ── */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 30px;
-            border-radius: 100px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-decoration: none;
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-            color: #fff;
-            box-shadow: 0 6px 28px var(--accent-glow);
-        }
-        .btn-primary:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-outline {
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-primary);
-            border: 1px solid var(--border-subtle);
-            backdrop-filter: blur(8px);
-        }
-        .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--accent-blue);
-            transform: translateY(-3px);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-secondary);
-            padding: 8px 16px;
-            font-size: 0.85rem;
-        }
-        .btn-ghost:hover {
-            color: var(--text-primary);
-        }
-
-        /* ── Section Shared ── */
-        section {
-            padding: 100px 0 80px;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-        section:last-of-type {
-            border-bottom: none;
-        }
-
-        .section-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--accent-blue);
-            margin-bottom: 12px;
-            background: rgba(59, 130, 246, 0.08);
-            padding: 4px 16px 4px 12px;
-            border-radius: 100px;
-            border: 1px solid rgba(59, 130, 246, 0.1);
-        }
-        .section-label i {
-            width: 14px;
-            height: 14px;
-        }
-
-        .section-header {
-            margin-bottom: 52px;
-        }
-        .section-header h2 {
-            font-size: 2.6rem;
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            line-height: 1.15;
-            background: linear-gradient(135deg, #fff 40%, var(--text-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .section-header p {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            max-width: 520px;
-            margin-top: 8px;
-        }
-
-        /* ── Hero ── */
-        .hero {
-            padding: 140px 0 100px;
-            text-align: center;
-            border-bottom: none;
-            position: relative;
-        }
-        .hero .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(59, 130, 246, 0.08);
-            color: #93bbfc;
-            border: 1px solid rgba(59, 130, 246, 0.15);
-            padding: 6px 18px 6px 14px;
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 28px;
-            backdrop-filter: blur(8px);
-        }
-        .hero-title {
-            font-size: 4.2rem;
-            font-weight: 900;
-            line-height: 1.08;
-            letter-spacing: -2.5px;
-            margin-bottom: 24px;
-        }
-        .hero-title .highlight {
-            background: linear-gradient(135deg, #60a5fa, #a78bfa, #22d3ee);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% 200%;
-            animation: grad-shift 6s ease-in-out infinite alternate;
-        }
-        @keyframes grad-shift {
-            0% {
-                background-position: 0% 50%;
-            }
-            100% {
-                background-position: 100% 50%;
-            }
-        }
-        .hero-description {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 680px;
-            margin: 0 auto 42px;
-            line-height: 1.7;
-        }
-        .hero-description strong {
-            color: var(--text-primary);
-        }
-        .hero-actions {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 48px;
-            margin-top: 56px;
-            flex-wrap: wrap;
-        }
-        .hero-stats .stat {
-            text-align: center;
-        }
-        .hero-stats .stat .number {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-stats .stat .label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 500;
-            margin-top: 2px;
-        }
-
-        /* ── Glass Card ── */
-        .glass-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(16px) saturate(1.2);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 32px 30px;
-            transition: var(--transition);
-            box-shadow: var(--shadow-card);
-            display: flex;
-            flex-direction: column;
-        }
-        .glass-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--border-glow);
-            background: var(--bg-card-hover);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-        }
-
-        .card-icon {
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius-sm);
-            background: rgba(59, 130, 246, 0.08);
-            color: var(--accent-blue);
-            margin-bottom: 18px;
-            font-size: 1.3rem;
-            transition: var(--transition);
-        }
-        .glass-card:hover .card-icon {
-            background: rgba(59, 130, 246, 0.18);
-            color: var(--accent-cyan);
-        }
-
-        .glass-card h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: -0.3px;
-        }
-        .glass-card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.7;
-            flex-grow: 1;
-        }
-
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 18px;
-        }
-        .tag {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-secondary);
-            padding: 3px 12px;
-            border-radius: 100px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            text-transform: uppercase;
-        }
-
-        /* ── Grid ── */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 28px;
-        }
-        .grid-2 {
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-        }
-
-        /* ── About Card ── */
-        .about-card {
-            max-width: 820px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 40px 44px;
-        }
-        .about-card p {
-            font-size: 1.1rem;
-            color: #cbd5e0;
-            line-height: 1.8;
-        }
-
-        /* ── Contact ── */
-        .contact-link {
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 6px 0;
-        }
-        .contact-link:hover {
-            color: var(--accent-blue);
-        }
-        .contact-link i {
-            color: var(--accent-blue);
-            width: 20px;
-            height: 20px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            width: 100%;
-        }
-        form input,
-        form textarea {
-            padding: 16px 18px;
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-            border-radius: var(--radius-sm);
-            font-family: inherit;
-            font-size: 0.95rem;
-            transition: var(--transition);
-            outline: none;
-        }
-        form input::placeholder,
-        form textarea::placeholder {
-            color: var(--text-muted);
-        }
-        form input:focus,
-        form textarea:focus {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
-        }
-        form textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        /* ── Footer ── */
-        footer {
-            text-align: center;
-            padding: 48px 0 32px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--border-subtle);
-            margin-top: 40px;
-        }
-        footer .heart {
-            color: #ef4444;
-            display: inline-block;
-            animation: heartbeat 1.6s infinite;
-        }
-        @keyframes heartbeat {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.2);
-            }
-        }
-
-        /* ── Responsive ── */
-        @media (max-width: 992px) {
-            .hero-title {
-                font-size: 3.2rem;
-            }
-            .section-header h2 {
-                font-size: 2.2rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            /* mobile nav toggle shown via JS */
-            .mobile-nav-toggle {
-                display: flex !important;
-            }
-            .hero {
-                padding: 100px 0 70px;
-            }
-            .hero-title {
-                font-size: 2.4rem;
-                letter-spacing: -1.5px;
-            }
-            .hero-description {
-                font-size: 1rem;
-            }
-            .hero-stats {
-                gap: 28px;
-            }
-            .hero-stats .stat .number {
-                font-size: 1.6rem;
-            }
-            .section-header h2 {
-                font-size: 1.8rem;
-            }
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-            .about-card {
-                padding: 28px 20px;
-            }
-            .glass-card {
-                padding: 24px 20px;
-            }
-            section {
-                padding: 70px 0 50px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-title {
-                font-size: 1.9rem;
-            }
-            .hero-actions .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            .container {
-                padding: 0 16px;
-            }
-        }
-
-        /* ── Mobile Nav Toggle ── */
-        .mobile-nav-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.6rem;
-            cursor: pointer;
-            padding: 4px;
-        }
-
-        .mobile-nav-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 200;
-            background: rgba(2, 4, 10, 0.92);
-            backdrop-filter: blur(24px);
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            padding: 40px;
-        }
-        .mobile-nav-overlay.open {
-            display: flex;
-        }
-        .mobile-nav-overlay a {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 1.4rem;
-            font-weight: 600;
-            transition: var(--transition);
-            padding: 8px 20px;
-            border-radius: 8px;
-        }
-        .mobile-nav-overlay a:hover {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent-blue);
-        }
-        .mobile-nav-overlay .close-btn {
-            position: absolute;
-            top: 24px;
-            right: 28px;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 2rem;
-            cursor: pointer;
-        }
-
-        /* ── Utility ── */
-        .text-center {
-            text-align: center;
-        }
-        .mx-auto {
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .mt-8 {
-            margin-top: 8px;
-        }
-        .mb-8 {
-            margin-bottom: 8px;
-        }
-        .gap-8 {
-            gap: 8px;
-        }
-        .flex-wrap {
-            flex-wrap: wrap;
-        }
-        .items-center {
-            align-items: center;
-        }
-    </style>
+    <!-- Custom Modern Stylesheet -->
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-    <!-- ─── 3D Canvas ─── -->
+    <!-- ─── Three.js Background Canvas ─── -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- ─── Mobile Nav Overlay ─── -->
-    <div class="mobile-nav-overlay" id="mobileNav">
-        <button class="close-btn" id="closeMobileNav" aria-label="Close menu">✕</button>
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="#games">Games</a>
-        <a href="#software">Software</a>
-        <a href="#database">Databases</a>
-        <a href="#education">Education</a>
-        <a href="#architecture">Systems</a>
-        <a href="#workspace">Setup</a>
-        <a href="#interests">Interests</a>
-        <a href="#contact">Contact</a>
-    </div>
+    <!-- ─── Ambient Glow Blobs ─── -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
 
-    <!-- ─── UI Container ─── -->
-    <div id="ui-container">
+    <!-- ─── Main Content Wrapper ─── -->
+    <div class="content-wrapper">
 
-        <!-- ─── Header ─── -->
-        <header>
+        <!-- ─── Navigation Header ─── -->
+        <header class="site-header">
             <div class="container">
-                <nav>
-                    <a href="#home" class="brand">
-                        Hari<span>.dev</span>
-                        <span class="dot"></span>
+                <nav class="main-nav" aria-label="Main Navigation">
+                    <a href="#hero" class="brand-logo">
+                        <div class="logo-avatar">HK</div>
+                        <span>Hari<span class="gradient-text">.dev</span></span>
+                        <span class="live-pulse-dot" title="Available for opportunities"></span>
                     </a>
 
-                    <ul class="nav-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#skills">Skills</a></li>
-                        <li><a href="#games">Games</a></li>
-                        <li><a href="#software">Software</a></li>
-                        <li><a href="#database">DB</a></li>
-                        <li><a href="#education">Edu</a></li>
-                        <li><a href="#architecture">Arch</a></li>
-                        <li><a href="#workspace">Setup</a></li>
-                        <li><a href="#interests">Interests</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                    <ul class="nav-menu">
+                        <li><a href="#hero" class="nav-link active">Home</a></li>
+                        <li><a href="#about" class="nav-link">About</a></li>
+                        <li><a href="#skills" class="nav-link">Skills</a></li>
+                        <li><a href="#projects" class="nav-link">Projects</a></li>
+                        <li><a href="#experience" class="nav-link">Education</a></li>
+                        <li><a href="#contact" class="nav-link">Contact</a></li>
                     </ul>
 
-                    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle menu">
+                    <div class="nav-actions">
+                        <a href="https://github.com/HariAcharyaKhatri" target="_blank" rel="noopener noreferrer" class="nav-btn-social" aria-label="GitHub Profile">
+                            <i data-lucide="github" style="width: 18px; height: 18px;"></i>
+                        </a>
+                        <a href="https://www.instagram.com/hariacharyakhatri/" target="_blank" rel="noopener noreferrer" class="nav-btn-social insta-link" aria-label="Instagram Profile @hariacharyakhatri">
+                            <i data-lucide="instagram" style="width: 18px; height: 18px;"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/hariacharyakhatri" target="_blank" rel="noopener noreferrer" class="nav-btn-social" aria-label="LinkedIn Profile">
+                            <i data-lucide="linkedin" style="width: 18px; height: 18px;"></i>
+                        </a>
+                        <a href="#contact" class="btn btn-primary btn-sm">
+                            <i data-lucide="send" style="width: 14px; height: 14px;"></i> Connect
+                        </a>
+                    </div>
+
+                    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu" aria-expanded="false">
                         <i data-lucide="menu"></i>
                     </button>
                 </nav>
             </div>
+
+            <!-- Mobile Navigation Drawer -->
+            <div class="mobile-drawer" id="mobileDrawer">
+                <a href="#hero" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#experience" class="nav-link">Education & Setup</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <div class="mobile-drawer-socials">
+                    <a href="https://github.com/HariAcharyaKhatri" target="_blank" rel="noopener noreferrer" class="nav-btn-social" aria-label="GitHub">
+                        <i data-lucide="github"></i>
+                    </a>
+                    <a href="https://www.instagram.com/hariacharyakhatri/" target="_blank" rel="noopener noreferrer" class="nav-btn-social insta-link" aria-label="Instagram">
+                        <i data-lucide="instagram"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/hariacharyakhatri" target="_blank" rel="noopener noreferrer" class="nav-btn-social" aria-label="LinkedIn">
+                        <i data-lucide="linkedin"></i>
+                    </a>
+                    <a href="mailto:hariacharyakhatri@gmail.com" class="nav-btn-social" aria-label="Email">
+                        <i data-lucide="mail"></i>
+                    </a>
+                </div>
+            </div>
         </header>
 
-        <!-- ─── HERO ─── -->
-        <section id="home" class="hero">
+        <!-- ─── Hero Section ─── -->
+        <section id="hero">
             <div class="container">
-                <div class="badge">
-                    <i data-lucide="terminal" style="width: 14px; height: 14px;"></i>
-                    Software &amp; Game Developer
+                <div class="hero-status-pill">
+                    <span class="pulse-indicator"></span>
+                    <span>BCA Student &amp; Full-Stack Systems Developer</span>
                 </div>
 
                 <h1 class="hero-title">
-                    Bridging the gap between <br />
-                    <span class="highlight">Complex Logic &amp; Interactive Design</span>
+                    Engineering Scalable Code <br />
+                    <span class="gradient-highlight">&amp; Interactive Digital Worlds</span>
                 </h1>
 
                 <p class="hero-description">
-                    Hi, I'm <strong>Hari Khatri</strong> — a BCA student and developer based in Mount Abu, Rajasthan.
-                    I specialize in writing clean C/C++ architectures and building logical game mechanics from the ground up.
+                    Hi, I'm <strong>Hari Khatri</strong> — a developer based in Mount Abu, Rajasthan. 
+                    I combine low-level systems programming in <strong>C/C++ &amp; Java</strong> with modern 
+                    web architectures in <strong>React, TypeScript &amp; Vite</strong> to build deep simulations, games, and tools.
                 </p>
 
-                <div class="hero-actions">
-                    <a href="#software" class="btn btn-primary">
-                        View Projects <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                <div class="hero-cta-group">
+                    <a href="#projects" class="btn btn-cyan">
+                        <span>Explore Projects</span>
+                        <i data-lucide="arrow-down" style="width: 17px; height: 17px;"></i>
+                    </a>
+                    <a href="https://www.instagram.com/hariacharyakhatri/" target="_blank" rel="noopener noreferrer" class="btn btn-instagram">
+                        <i data-lucide="instagram" style="width: 17px; height: 17px;"></i>
+                        <span>Follow on Instagram</span>
                     </a>
                     <a href="#contact" class="btn btn-outline">
-                        <i data-lucide="mail" style="width: 18px; height: 18px;"></i> Contact Me
+                        <i data-lucide="mail" style="width: 17px; height: 17px;"></i>
+                        <span>Get In Touch</span>
                     </a>
                 </div>
 
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="number">10+</div>
-                        <div class="label">Projects Built</div>
+                <div class="hero-social-links">
+                    <a href="https://github.com/HariAcharyaKhatri" target="_blank" rel="noopener noreferrer" class="social-pill">
+                        <i data-lucide="github" style="width: 16px; height: 16px;"></i>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="https://www.instagram.com/hariacharyakhatri/" target="_blank" rel="noopener noreferrer" class="social-pill instagram-pill">
+                        <i data-lucide="instagram" style="width: 16px; height: 16px;"></i>
+                        <span>@hariacharyakhatri</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/hariacharyakhatri" target="_blank" rel="noopener noreferrer" class="social-pill">
+                        <i data-lucide="linkedin" style="width: 16px; height: 16px;"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="mailto:hariacharyakhatri@gmail.com" class="social-pill">
+                        <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
+                        <span>Email</span>
+                    </a>
+                </div>
+
+                <!-- Hero Stats Grid -->
+                <div class="hero-stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number">4+</div>
+                        <div class="stat-label">Featured Repositories</div>
                     </div>
-                    <div class="stat">
-                        <div class="number">4</div>
-                        <div class="label">Languages Mastered</div>
+                    <div class="stat-box">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Live Deployed Apps</div>
                     </div>
-                    <div class="stat">
-                        <div class="number">2</div>
-                        <div class="label">Years of Learning</div>
+                    <div class="stat-box">
+                        <div class="stat-number">2nd</div>
+                        <div class="stat-label">Year BCA (MLSU)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Logic-Driven Execution</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ─── ABOUT ─── -->
+        <!-- ─── About Section ─── -->
         <section id="about">
             <div class="container">
                 <div class="section-header text-center">
-                    <div class="section-label mx-auto"><i data-lucide="user"></i> About Me</div>
-                    <h2>01. The Developer Behind the Code</h2>
-                    <p class="mx-auto">A deep dive into logic-driven problem solving.</p>
+                    <div class="section-label">
+                        <i data-lucide="user"></i>
+                        <span>About Hari</span>
+                    </div>
+                    <h2 class="section-title">The Mind Behind the Code</h2>
+                    <p class="section-subtitle">Bridging the gap between hardware memory constraints and responsive user experiences.</p>
                 </div>
-                <div class="glass-card about-card">
-                    <p>
-                        I am a highly motivated Bachelor of Computer Applications (BCA) student currently studying at
-                        Adarsh College of Professional Studies, Abu Road. My true passion lies in understanding how software
-                        operates at the memory level. I spend my time mastering core programming languages like C and C++,
-                        and designing relational database schemas that power backend applications. My goal is to leverage my
-                        technical skills to contribute effectively to software engineering projects and continuous learning.
-                    </p>
+
+                <div class="about-grid">
+                    <div class="glass-card about-story-card">
+                        <p>
+                            I am <strong>Hari Khatri</strong>, a Bachelor of Computer Applications (BCA) student at 
+                            <strong>Adarsh College of Professional Studies</strong>, Abu Road (affiliated with MLSU Udaipur), 
+                            residing in the scenic hill town of Mount Abu, Rajasthan.
+                        </p>
+                        <p>
+                            My development journey is driven by a deep curiosity about how software works beneath the surface. 
+                            Rather than relying exclusively on high-level frameworks, I began by mastering <strong>C and C++</strong>, 
+                            exploring direct memory allocation, pointer arithmetic, data structures, and algorithmic state machines.
+                        </p>
+                        <p>
+                            Today, I channel that foundational knowledge into building complete products: from rich interactive 
+                            web apps like <strong>Silicon Dynasty</strong> (a deep PC empire simulation built with React 19 &amp; TypeScript) 
+                            and <strong>CALIGO</strong> (a browser crime MMORPG with client-side state) to native Java IDE tooling and 
+                            complex discrete mathematical game engines.
+                        </p>
+                    </div>
+
+                    <div class="glass-card about-features-card">
+                        <div class="about-feature-item">
+                            <div class="feature-icon-box">
+                                <i data-lucide="cpu"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4>Systems-First Thinking</h4>
+                                <p>Understanding memory layout, algorithmic complexity, and cache coherence to build highly optimized programs.</p>
+                            </div>
+                        </div>
+
+                        <div class="about-feature-item">
+                            <div class="feature-icon-box">
+                                <i data-lucide="globe"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4>Modern Web Engineering</h4>
+                                <p>Building polished single-page applications with React 19, TypeScript, Vite, Tailwind CSS, and Web Audio APIs.</p>
+                            </div>
+                        </div>
+
+                        <div class="about-feature-item">
+                            <div class="feature-icon-box">
+                                <i data-lucide="database"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4>Structured Data &amp; Design</h4>
+                                <p>Architecting normalized relational schemas (3NF) and clean, maintainable modular codebases.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- ─── SKILLS ─── -->
+        <!-- ─── Skills Section ─── -->
         <section id="skills">
             <div class="container">
-                <div class="section-header">
-                    <div class="section-label"><i data-lucide="code-2"></i> Technical Arsenal</div>
-                    <h2>02. Languages &amp; Frameworks</h2>
-                    <p>The tools I use to build robust systems.</p>
+                <div class="section-header text-center">
+                    <div class="section-label">
+                        <i data-lucide="code-2"></i>
+                        <span>Technical Arsenal</span>
+                    </div>
+                    <h2 class="section-title">Skills &amp; Technologies</h2>
+                    <p class="section-subtitle">Real technologies and engineering practices exercised across my active repositories.</p>
                 </div>
-                <div class="grid">
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="cpu"></i></div>
-                        <h3>Core Languages</h3>
-                        <p>Deep foundational knowledge in C, C++, and Java. Focus on memory management, pointers, and Object-Oriented Programming (OOP) concepts.</p>
+
+                <div class="skills-grid">
+                    <!-- Category 1 -->
+                    <div class="glass-card skill-category-card">
+                        <div class="skill-category-header">
+                            <div class="skill-category-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-blue);">
+                                <i data-lucide="terminal"></i>
+                            </div>
+                            <div>
+                                <h3>Core &amp; Systems Programming</h3>
+                                <p>Foundational languages and low-level memory engineering</p>
+                            </div>
+                        </div>
+                        <div class="skill-badges-container">
+                            <span class="skill-badge"><i data-lucide="cpu"></i> C</span>
+                            <span class="skill-badge"><i data-lucide="cpu"></i> C++</span>
+                            <span class="skill-badge"><i data-lucide="coffee"></i> Java</span>
+                            <span class="skill-badge"><i data-lucide="binary"></i> Memory Management</span>
+                            <span class="skill-badge"><i data-lucide="git-branch"></i> Data Structures</span>
+                            <span class="skill-badge"><i data-lucide="shuffle"></i> Algorithms</span>
+                            <span class="skill-badge"><i data-lucide="box"></i> OOP Concepts</span>
+                        </div>
                     </div>
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="database"></i></div>
-                        <h3>Data &amp; Backend</h3>
-                        <p>Proficient in SQL and Database Management Systems (DBMS). Experienced in normalizing tables and writing efficient queries.</p>
+
+                    <!-- Category 2 -->
+                    <div class="glass-card skill-category-card">
+                        <div class="skill-category-header">
+                            <div class="skill-category-icon" style="background: rgba(6, 182, 212, 0.1); color: var(--accent-cyan);">
+                                <i data-lucide="layout"></i>
+                            </div>
+                            <div>
+                                <h3>Modern Web &amp; Frontend</h3>
+                                <p>Reactive user interfaces and real-time client systems</p>
+                            </div>
+                        </div>
+                        <div class="skill-badges-container">
+                            <span class="skill-badge"><i data-lucide="atom"></i> React 19</span>
+                            <span class="skill-badge"><i data-lucide="code"></i> TypeScript</span>
+                            <span class="skill-badge"><i data-lucide="file-code"></i> JavaScript (ES6+)</span>
+                            <span class="skill-badge"><i data-lucide="zap"></i> Vite</span>
+                            <span class="skill-badge"><i data-lucide="palette"></i> Tailwind CSS</span>
+                            <span class="skill-badge"><i data-lucide="monitor"></i> HTML5 Canvas</span>
+                            <span class="skill-badge"><i data-lucide="music"></i> Web Audio API</span>
+                        </div>
                     </div>
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="git-branch"></i></div>
-                        <h3>Tools &amp; Practices</h3>
-                        <p>Utilizing Data Structures, Git, GitHub for version control, and enterprise software tools like Tally ERP.9 for accounting integration.</p>
+
+                    <!-- Category 3 -->
+                    <div class="glass-card skill-category-card">
+                        <div class="skill-category-header">
+                            <div class="skill-category-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple);">
+                                <i data-lucide="database"></i>
+                            </div>
+                            <div>
+                                <h3>Database &amp; Architecture</h3>
+                                <p>Relational modeling, query design, and state pipelines</p>
+                            </div>
+                        </div>
+                        <div class="skill-badges-container">
+                            <span class="skill-badge"><i data-lucide="database"></i> SQL</span>
+                            <span class="skill-badge"><i data-lucide="table"></i> Relational DBMS</span>
+                            <span class="skill-badge"><i data-lucide="git-merge"></i> 3NF Normalization</span>
+                            <span class="skill-badge"><i data-lucide="hard-drive"></i> LocalStorage Persistence</span>
+                            <span class="skill-badge"><i data-lucide="network"></i> Game State Trees</span>
+                            <span class="skill-badge"><i data-lucide="file-text"></i> Binary File I/O</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 4 -->
+                    <div class="glass-card skill-category-card">
+                        <div class="skill-category-header">
+                            <div class="skill-category-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-green);">
+                                <i data-lucide="wrench"></i>
+                            </div>
+                            <div>
+                                <h3>Developer Tools &amp; Practices</h3>
+                                <p>Version control, CLI environments, and desktop software</p>
+                            </div>
+                        </div>
+                        <div class="skill-badges-container">
+                            <span class="skill-badge"><i data-lucide="git-pull-request"></i> Git</span>
+                            <span class="skill-badge"><i data-lucide="github"></i> GitHub &amp; Pages</span>
+                            <span class="skill-badge"><i data-lucide="terminal"></i> PowerShell &amp; Bash</span>
+                            <span class="skill-badge"><i data-lucide="code"></i> VS Code</span>
+                            <span class="skill-badge"><i data-lucide="sliders"></i> Process Streams</span>
+                            <span class="skill-badge"><i data-lucide="award"></i> Tally ERP.9</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ─── GAMES ─── -->
-        <section id="games">
-            <div class="container">
-                <div class="section-header">
-                    <div class="section-label"><i data-lucide="gamepad-2"></i> Game Dev</div>
-                    <h2>03. Game Development</h2>
-                    <p>Building interactive logic without pre-built physics engines.</p>
-                </div>
-                <div class="grid">
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="swords"></i></div>
-                        <h3>Ancient Chess Engine</h3>
-                        <p>A comprehensive chess simulation developed entirely in C++. It handles complex algorithmic move validations, turn-based state management, and strict rule enforcement at the code level.</p>
-                        <div class="tags">
-                            <span class="tag">C++</span>
-                            <span class="tag">Algorithms</span>
-                            <span class="tag">Game State</span>
-                        </div>
-                    </div>
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="crosshair"></i></div>
-                        <h3>Tiger Gambit</h3>
-                        <p>A tactical 2D strategy logic project. Focused on programming advanced gameplay mechanics, dynamic state transitions, and engaging player feedback loops.</p>
-                        <div class="tags">
-                            <span class="tag">Game Logic</span>
-                            <span class="tag">Mechanics</span>
-                            <span class="tag">Architecture</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ─── SOFTWARE ─── -->
-        <section id="software">
-            <div class="container">
-                <div class="section-header">
-                    <div class="section-label"><i data-lucide="folder-code"></i> Software</div>
-                    <h2>04. Software Projects</h2>
-                    <p>Practical applications built to solve real-world data problems.</p>
-                </div>
-                <div class="grid">
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="users"></i></div>
-                        <h3>Student Record System</h3>
-                        <p>A modular console-based application to manage student records with full CRUD operations. Utilized file handling streams in C for persistent local data storage.</p>
-                        <div class="tags">
-                            <span class="tag">C</span>
-                            <span class="tag">File Handling</span>
-                            <span class="tag">CRUD</span>
-                        </div>
-                    </div>
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="landmark"></i></div>
-                        <h3>Bank Management System</h3>
-                        <p>An interactive banking system supporting account creation, balance inquiries, and secure withdrawals using C++ data encapsulation and class hierarchies.</p>
-                        <div class="tags">
-                            <span class="tag">C++</span>
-                            <span class="tag">OOP</span>
-                            <span class="tag">Encapsulation</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ─── DATABASE ─── -->
-        <section id="database">
+        <!-- ─── Projects Section ─── -->
+        <section id="projects">
             <div class="container">
                 <div class="section-header text-center">
-                    <div class="section-label mx-auto"><i data-lucide="book-open"></i> Database</div>
-                    <h2>05. Database Architecture</h2>
-                    <p class="mx-auto">Structuring information for scalable retrieval.</p>
-                </div>
-                <div class="glass-card" style="max-width: 780px; margin: 0 auto; text-align: center;">
-                    <div class="card-icon" style="margin: 0 auto 18px;"><i data-lucide="book-open"></i></div>
-                    <h3>Library Database System</h3>
-                    <p style="text-align: center;">Architected a highly normalized relational database schema to streamline book tracking, issue logs, and student inventory. Handled optimized SQL queries, table joins, and strict data constraints to prevent redundancy.</p>
-                    <div class="tags" style="justify-content: center;">
-                        <span class="tag">SQL</span>
-                        <span class="tag">RDBMS</span>
-                        <span class="tag">Normalization</span>
+                    <div class="section-label">
+                        <i data-lucide="folder-code"></i>
+                        <span>Showcase</span>
                     </div>
+                    <h2 class="section-title">Featured &amp; Live Projects</h2>
+                    <p class="section-subtitle">Real-world applications, live browser deployments, and software engines built from scratch.</p>
+                </div>
+
+                <!-- Projects Filter Bar -->
+                <div class="projects-filter-bar">
+                    <button class="filter-btn active" data-filter="all">All Projects</button>
+                    <button class="filter-btn" data-filter="live">⚡ Live Demos</button>
+                    <button class="filter-btn" data-filter="web">Web &amp; AI</button>
+                    <button class="filter-btn" data-filter="game">Game Engines</button>
+                    <button class="filter-btn" data-filter="system">Systems &amp; DB</button>
+                </div>
+
+                <!-- Centralized Dynamic Projects Grid -->
+                <div class="projects-grid" id="projectsGrid">
+                    <!-- Populated automatically by js/main.js from js/projects-data.js -->
                 </div>
             </div>
         </section>
 
-        <!-- ─── EDUCATION ─── -->
-        <section id="education">
-            <div class="container">
-                <div class="section-header">
-                    <div class="section-label"><i data-lucide="graduation-cap"></i> Education</div>
-                    <h2>06. Academic Background</h2>
-                    <p>Formal training in computer science and logical reasoning.</p>
-                </div>
-                <div class="grid">
-                    <div class="glass-card">
-                        <h3>Bachelor of Computer Applications (BCA)</h3>
-                        <p style="color: var(--accent-cyan); font-weight: 600; margin-bottom: 10px;">2nd Year Student</p>
-                        <p>Adarsh College of Professional Studies, Abu Road (MLSU Udaipur). Currently building a strong theoretical foundation in DBMS, networking, and software engineering.</p>
-                    </div>
-                    <div class="glass-card">
-                        <h3>Senior Secondary (Class XII)</h3>
-                        <p style="color: var(--accent-cyan); font-weight: 600; margin-bottom: 10px;">Science / Biology</p>
-                        <p>Completed higher secondary education under the RBSE board, building strong analytical and mathematical problem-solving skills required for advanced programming.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ─── ARCHITECTURE ─── -->
-        <section id="architecture">
-            <div class="container">
-                <div class="section-header">
-                    <div class="section-label"><i data-lucide="network"></i> Systems</div>
-                    <h2>07. System Architecture</h2>
-                    <p>Planning before coding.</p>
-                </div>
-                <div class="grid">
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="file-text"></i></div>
-                        <h3>Game Design Documents (GDD)</h3>
-                        <p>Experienced in writing detailed structural criteria and planning micro-level mechanics for complex applications before writing the underlying code.</p>
-                    </div>
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="network"></i></div>
-                        <h3>Data Flow Mapping</h3>
-                        <p>Charting out user interactions and memory allocation paths to ensure applications remain optimized and free of memory leaks.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ─── WORKSPACE ─── -->
-        <section id="workspace">
+        <!-- ─── Education & Workspace Section ─── -->
+        <section id="experience">
             <div class="container">
                 <div class="section-header text-center">
-                    <div class="section-label mx-auto"><i data-lucide="monitor"></i> Setup</div>
-                    <h2>08. Development Setup</h2>
-                    <p class="mx-auto">My daily hardware ecosystem.</p>
+                    <div class="section-label">
+                        <i data-lucide="graduation-cap"></i>
+                        <span>Background &amp; Setup</span>
+                    </div>
+                    <h2 class="section-title">Education &amp; Environment</h2>
+                    <p class="section-subtitle">Formal training in computer science alongside my daily development workstation.</p>
                 </div>
-                <div class="glass-card" style="max-width: 620px; margin: 0 auto;">
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-subtle);">
-                            <span style="color: var(--text-muted);">Machine</span>
-                            <span style="font-weight: 600;">Acer Performance Laptop</span>
-                        </li>
-                        <li style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-subtle);">
-                            <span style="color: var(--text-muted);">Processor</span>
-                            <span style="font-weight: 600;">AMD Ryzen 5</span>
-                        </li>
-                        <li style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-subtle);">
-                            <span style="color: var(--text-muted);">Memory</span>
-                            <span style="font-weight: 600;">16 GB RAM · 512 GB SSD</span>
-                        </li>
-                        <li style="display: flex; justify-content: space-between; padding: 12px 0;">
-                            <span style="color: var(--text-muted);">Peripherals</span>
-                            <span style="font-weight: 600;">EVOFOX wired gaming mouse</span>
-                        </li>
-                    </ul>
+
+                <div class="timeline-grid">
+                    <!-- Education Card -->
+                    <div class="glass-card timeline-card">
+                        <div class="timeline-card-header">
+                            <div class="skill-category-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-blue);">
+                                <i data-lucide="book-open"></i>
+                            </div>
+                            <div>
+                                <h3>Academic Pathway</h3>
+                                <p style="color: var(--text-muted); font-size: 0.84rem;">Higher education in computer science &amp; logic</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-items">
+                            <div class="timeline-item">
+                                <div class="timeline-period">2024 — Present (2nd Year)</div>
+                                <h4 class="timeline-title">Bachelor of Computer Applications (BCA)</h4>
+                                <div class="timeline-subtitle">Adarsh College of Professional Studies, Abu Road · MLSU Udaipur</div>
+                                <p class="timeline-desc">
+                                    Rigorous study in core computer science, relational database management systems (DBMS), 
+                                    computer networks, object-oriented software engineering, and data structures.
+                                </p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-period">Senior Secondary</div>
+                                <h4 class="timeline-title">Higher Secondary (Class XII) — Science</h4>
+                                <div class="timeline-subtitle">Board of Secondary Education Rajasthan (RBSE)</div>
+                                <p class="timeline-desc">
+                                    Built disciplined quantitative reasoning, scientific inquiry, and analytical problem-solving skills 
+                                    crucial for complex algorithmic engineering.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workstation Card -->
+                    <div class="glass-card timeline-card">
+                        <div class="timeline-card-header">
+                            <div class="skill-category-icon" style="background: rgba(6, 182, 212, 0.1); color: var(--accent-cyan);">
+                                <i data-lucide="monitor"></i>
+                            </div>
+                            <div>
+                                <h3>Development Setup</h3>
+                                <p style="color: var(--text-muted); font-size: 0.84rem;">Hardware &amp; tools driving daily coding sessions</p>
+                            </div>
+                        </div>
+
+                        <ul class="spec-list">
+                            <li class="spec-row">
+                                <span class="spec-label"><i data-lucide="laptop"></i> Hardware Machine</span>
+                                <span class="spec-value">Acer Performance Laptop</span>
+                            </li>
+                            <li class="spec-row">
+                                <span class="spec-label"><i data-lucide="cpu"></i> Processor</span>
+                                <span class="spec-value">AMD Ryzen 5 High-Efficiency</span>
+                            </li>
+                            <li class="spec-row">
+                                <span class="spec-label"><i data-lucide="hard-drive"></i> RAM &amp; Storage</span>
+                                <span class="spec-value">16 GB RAM · 512 GB NVMe SSD</span>
+                            </li>
+                            <li class="spec-row">
+                                <span class="spec-label"><i data-lucide="mouse-pointer"></i> Peripherals</span>
+                                <span class="spec-value">EVOFOX Precision Gaming Mouse</span>
+                            </li>
+                            <li class="spec-row">
+                                <span class="spec-label"><i data-lucide="terminal"></i> Environment</span>
+                                <span class="spec-value">VS Code, PowerShell, Git</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- ─── INTERESTS ─── -->
-        <section id="interests">
-            <div class="container">
-                <div class="section-header">
-                    <div class="section-label"><i data-lucide="sparkles"></i> Interests</div>
-                    <h2>09. Interests &amp; Hobbies</h2>
-                    <p>What fuels my creativity outside the IDE.</p>
-                </div>
-                <div class="grid">
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="bike"></i></div>
-                        <h3>Automotive Engineering</h3>
-                        <p>A deep interest in high-performance machinery, heavy-duty trucks, and motorcycles, specifically examining the technical specs of bikes like the Ducati Multistrada Rally V4.</p>
-                    </div>
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="crown"></i></div>
-                        <h3>Strategic Chess</h3>
-                        <p>Active player utilizing platforms like Chess.com to improve tactical thinking, which directly influences my approach to logical coding.</p>
-                    </div>
-                    <div class="glass-card">
-                        <div class="card-icon"><i data-lucide="monitor-play"></i></div>
-                        <h3>Anime Archiving</h3>
-                        <p>Maintaining and tracking an extensive, organized personal library of various animated series.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ─── CONTACT ─── -->
+        <!-- ─── Contact Section ─── -->
         <section id="contact">
             <div class="container">
                 <div class="section-header text-center">
-                    <div class="section-label mx-auto"><i data-lucide="mail"></i> Connect</div>
-                    <h2>10. Let's Connect</h2>
-                    <p class="mx-auto">Open for collaborations, projects, and discussions.</p>
+                    <div class="section-label">
+                        <i data-lucide="mail"></i>
+                        <span>Contact Me</span>
+                    </div>
+                    <h2 class="section-title">Let's Connect &amp; Collaborate</h2>
+                    <p class="section-subtitle">Have an opportunity, a project idea, or simply want to talk tech? Reach out anytime.</p>
                 </div>
-                <div class="grid grid-2">
-                    <div class="glass-card">
-                        <h3 style="margin-bottom: 8px;">Get in Touch</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 24px;">I'm always open to new ideas and opportunities.</p>
 
-                        <a href="mailto:hariacharyakhatri@gmail.com" class="contact-link">
-                            <i data-lucide="mail"></i> hariacharyakhatri@gmail.com
-                        </a>
-                        <a href="#" class="contact-link">
-                            <i data-lucide="map-pin"></i> Mount Abu, Rajasthan, India
-                        </a>
-                        <a href="#" class="contact-link">
-                            <i data-lucide="graduation-cap"></i> BCA Student, MLSU
-                        </a>
+                <div class="contact-grid">
+                    <!-- Contact Information Column -->
+                    <div class="glass-card contact-info-card">
+                        <div>
+                            <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 8px;">Direct Communication</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                                I am always excited to discuss software engineering, collaborative projects, or open-source initiatives.
+                            </p>
 
-                        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px;">
-                            <a href="https://github.com/HariAcharyaKhatri" target="_blank" class="btn btn-outline" style="padding: 10px 20px;">
-                                <i data-lucide="github"></i> GitHub
-                            </a>
-                            <a href="https://www.linkedin.com/in/hariacharyakhatri" target="_blank" class="btn btn-outline" style="padding: 10px 20px;">
-                                <i data-lucide="linkedin"></i> LinkedIn
-                            </a>
-                            <a href="mailto:hariacharyakhatri@gmail.com" class="btn btn-outline" style="padding: 10px 20px;">
-                                <i data-lucide="mail"></i> Email
-                            </a>
+                            <div class="contact-channels">
+                                <a href="mailto:hariacharyakhatri@gmail.com" class="contact-channel-item">
+                                    <div class="channel-icon">
+                                        <i data-lucide="mail"></i>
+                                    </div>
+                                    <div class="channel-text">
+                                        <h4>Email Address</h4>
+                                        <p>hariacharyakhatri@gmail.com</p>
+                                    </div>
+                                </a>
+
+                                <a href="https://www.instagram.com/hariacharyakhatri/" target="_blank" rel="noopener noreferrer" class="contact-channel-item instagram-channel">
+                                    <div class="channel-icon">
+                                        <i data-lucide="instagram"></i>
+                                    </div>
+                                    <div class="channel-text">
+                                        <h4>Instagram</h4>
+                                        <p>@hariacharyakhatri</p>
+                                    </div>
+                                </a>
+
+                                <a href="https://github.com/HariAcharyaKhatri" target="_blank" rel="noopener noreferrer" class="contact-channel-item">
+                                    <div class="channel-icon">
+                                        <i data-lucide="github"></i>
+                                    </div>
+                                    <div class="channel-text">
+                                        <h4>GitHub Profile</h4>
+                                        <p>github.com/HariAcharyaKhatri</p>
+                                    </div>
+                                </a>
+
+                                <div class="contact-channel-item" style="cursor: default;">
+                                    <div class="channel-icon">
+                                        <i data-lucide="map-pin"></i>
+                                    </div>
+                                    <div class="channel-text">
+                                        <h4>Location</h4>
+                                        <p>Mount Abu, Rajasthan, India</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Copy Email Box -->
+                        <div class="copy-email-box">
+                            <span class="copy-email-text">hariacharyakhatri@gmail.com</span>
+                            <button class="btn btn-outline btn-sm" id="copyEmailBtn" type="button" aria-label="Copy email address">
+                                <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy
+                            </button>
                         </div>
                     </div>
 
-                    <div class="glass-card">
-                        <form id="contactForm" onsubmit="event.preventDefault(); alert('✅ Message sent successfully!'); this.reset();">
-                            <input type="text" placeholder="Your Name" required />
-                            <input type="email" placeholder="Your Email" required />
-                            <textarea rows="4" placeholder="Your Message…" required></textarea>
-                            <button type="submit" class="btn btn-primary" style="justify-content: center; width: 100%;">
-                                Send Message <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+                    <!-- Contact Form Column -->
+                    <div class="glass-card contact-form-card">
+                        <form id="contactForm" class="contact-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="senderName">Your Name</label>
+                                    <input type="text" id="senderName" placeholder="e.g. Alex Smith" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="senderEmail">Your Email</label>
+                                    <input type="email" id="senderEmail" placeholder="e.g. alex@example.com" required />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="senderMessage">Message</label>
+                                <textarea id="senderMessage" rows="5" placeholder="Share your message or project ideas..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                                <span>Send Direct Message</span>
+                                <i data-lucide="send" style="width: 16px; height: 16px;"></i>
                             </button>
                         </form>
                     </div>
                 </div>
-
-                <footer>
-                    <p>
-                        &copy; 2026 Hari Khatri &middot; Designed with
-                        <span class="heart">♥</span> and logic
-                    </p>
-                </footer>
             </div>
         </section>
 
+        <!-- ─── Site Footer ─── -->
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <h3>Hari Khatri<span style="color: var(--accent-cyan);">.dev</span></h3>
+                        <p>BCA Student &amp; Software Developer · Mount Abu, Rajasthan</p>
+                    </div>
+
+                    <div class="footer-social-icons">
+                        <a href="https://github.com/HariAcharyaKhatri" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="GitHub">
+                            <i data-lucide="github"></i>
+                        </a>
+                        <a href="https://www.instagram.com/hariacharyakhatri/" target="_blank" rel="noopener noreferrer" class="footer-social-btn insta" aria-label="Instagram @hariacharyakhatri">
+                            <i data-lucide="instagram"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/hariacharyakhatri" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="LinkedIn">
+                            <i data-lucide="linkedin"></i>
+                        </a>
+                        <a href="mailto:hariacharyakhatri@gmail.com" class="footer-social-btn" aria-label="Email">
+                            <i data-lucide="mail"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>&copy; <span id="currentYear">2026</span> Hari Khatri. Designed &amp; Developed with precision.</p>
+                    <button class="back-to-top-btn" id="backToTopBtn" type="button">
+                        <span>Back to top</span>
+                        <i data-lucide="arrow-up" style="width: 14px; height: 14px;"></i>
+                    </button>
+                </div>
+            </div>
+        </footer>
+
     </div>
-    <!-- ─── end UI Container ─── -->
+    <!-- ─── End Content Wrapper ─── -->
 
+    <!-- Centralized Projects Data -->
+    <script src="js/projects-data.js"></script>
 
-    <!-- ─── Three.js ─── -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js">
-    </script>
-
-    <script>
-        // ─── Lucide Icons ───
-        lucide.createIcons();
-
-        // ─── Mobile Nav ───
-        const toggleBtn = document.getElementById('mobileNavToggle');
-        const mobileNav = document.getElementById('mobileNav');
-        const closeBtn = document.getElementById('closeMobileNav');
-
-        function openMobileNav() {
-            mobileNav.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeMobileNav() {
-            mobileNav.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        toggleBtn.addEventListener('click', openMobileNav);
-        closeBtn.addEventListener('click', closeMobileNav);
-        mobileNav.addEventListener('click', (e) => {
-            if (e.target === mobileNav) closeMobileNav();
-        });
-        // close on link click
-        mobileNav.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', closeMobileNav);
-        });
-
-        // ─── THREE.JS 3D Background ───
-        const canvas = document.getElementById('bg-canvas');
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x02040a, 0.012);
-
-        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0, 38);
-
-        const renderer = new THREE.WebGLRenderer({
-            canvas,
-            alpha: true,
-            antialias: true,
-        });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x02040a, 0);
-
-        // ── Main Object: Torus Knot with wireframe + glow ──
-        const knotGeo = new THREE.TorusKnotGeometry(10, 3.2, 160, 24);
-        const knotMat = new THREE.MeshBasicMaterial({
-            color: 0x3b82f6,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.12,
-        });
-        const knot = new THREE.Mesh(knotGeo, knotMat);
-        scene.add(knot);
-
-        // Secondary inner glow ring
-        const ringGeo = new THREE.TorusGeometry(12, 0.3, 48, 64);
-        const ringMat = new THREE.MeshBasicMaterial({
-            color: 0x8b5cf6,
-            transparent: true,
-            opacity: 0.15,
-            wireframe: true,
-        });
-        const ring = new THREE.Mesh(ringGeo, ringMat);
-        scene.add(ring);
-
-        // ── Particles ──
-        const particleCount = 1600;
-        const posArray = new Float32Array(particleCount * 3);
-        const sizes = new Float32Array(particleCount);
-        for (let i = 0; i < particleCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 240;
-            if (i % 3 === 0) sizes[Math.floor(i / 3)] = 0.1 + Math.random() * 0.3;
-        }
-        const particleGeo = new THREE.BufferGeometry();
-        particleGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        particleGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-        const particleMat = new THREE.PointsMaterial({
-            color: 0x8b5cf6,
-            size: 0.2,
-            transparent: true,
-            opacity: 0.5,
-            blending: THREE.AdditiveBlending,
-            sizeAttenuation: true,
-        });
-        const particles = new THREE.Points(particleGeo, particleMat);
-        scene.add(particles);
-
-        // Second particle layer (blue)
-        const particleMat2 = new THREE.PointsMaterial({
-            color: 0x22d3ee,
-            size: 0.12,
-            transparent: true,
-            opacity: 0.3,
-            blending: THREE.AdditiveBlending,
-            sizeAttenuation: true,
-        });
-        const particles2 = new THREE.Points(particleGeo.clone(), particleMat2);
-        particles2.rotation.x = 1.2;
-        particles2.rotation.y = 0.8;
-        scene.add(particles2);
-
-        // ── Mouse Parallax ──
-        let mouseX = 0,
-            mouseY = 0;
-        let targetX = 0,
-            targetY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-        });
-
-        // ── Scroll reactivity ──
-        const ui = document.getElementById('ui-container');
-        let scrollOffset = 0;
-
-        ui.addEventListener('scroll', () => {
-            const maxScroll = ui.scrollHeight - ui.clientHeight;
-            scrollOffset = maxScroll > 0 ? ui.scrollTop / maxScroll : 0;
-        });
-
-        // ── Resize ──
-        window.addEventListener('resize', () => {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            camera.aspect = w / h;
-            camera.updateProjectionMatrix();
-            renderer.setSize(w, h);
-        });
-
-        // ── Animation Loop ──
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Smooth mouse
-            targetX += (mouseX - targetX) * 0.04;
-            targetY += (mouseY - targetY) * 0.04;
-
-            // Rotate knot
-            knot.rotation.x += 0.0025;
-            knot.rotation.y += 0.004;
-            knot.rotation.z += 0.0015;
-
-            ring.rotation.x = knot.rotation.x * 0.7;
-            ring.rotation.y = knot.rotation.y * 0.7;
-
-            particles.rotation.y += 0.0004;
-            particles.rotation.x += 0.0002;
-            particles2.rotation.y -= 0.0003;
-            particles2.rotation.z += 0.0002;
-
-            // Parallax
-            knot.position.x += (targetX * 4 - knot.position.x) * 0.02;
-            knot.position.y += (targetY * 3 - knot.position.y) * 0.02;
-            ring.position.x = knot.position.x;
-            ring.position.y = knot.position.y;
-
-            camera.position.x += (targetX * 2 - camera.position.x) * 0.015;
-            camera.position.y += (targetY * 1.5 - camera.position.y) * 0.015;
-            camera.lookAt(0, 0, 0);
-
-            // Scroll influence
-            const scrollY = scrollOffset * 6;
-            knot.position.z = scrollY * 0.3;
-            ring.position.z = scrollY * 0.2;
-
-            renderer.render(scene, camera);
-        }
-
-        animate();
-    </script>
-
+    <!-- Main Application Logic -->
+    <script src="js/main.js"></script>
 </body>
 </html>
