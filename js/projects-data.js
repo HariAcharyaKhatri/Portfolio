@@ -127,7 +127,7 @@ const PROJECTS_DATA = [
         subtitle: "Tactical 2D Strategy & Logic Simulation",
         category: "game",
         badge: "Strategy Logic",
-        status: "code",
+        status: "live",
         icon: "shield",
         isLive: true,
         liveUrl: "https://hariacharyakhatri.github.io/TIGER-GAMBIT/",
