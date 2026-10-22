@@ -131,7 +131,7 @@ const PROJECTS_DATA = [
         icon: "shield",
         isLive: false,
         liveUrl: "https://hariacharyakhatri.github.io/TIGER-GAMBIT/",
-        githubUrl: "https://github.com/HariAcharyaKhatri",
+        githubUrl: "https://hariacharyakhatri.github.io/TIGER-GAMBIT/",
         description: "A 2D strategy game centered around tactical asymmetric combat mechanics. Focuses on advanced mathematical rulesets, turn-by-turn state machines, resource trading calculations, and dynamic feedback systems.",
         highlights: [
             "Turn-based state machine enforcing asymmetric game rules",
