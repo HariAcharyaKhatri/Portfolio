@@ -12,33 +12,38 @@
 
 ## 🌟 Overview
 
-I am **Hari Khatri**, a Bachelor of Computer Applications (BCA) student at **Adarsh College of Professional Studies**, Abu Road (affiliated with Mohanlal Sukhadia University / MLSU Udaipur), based in Mount Abu, Rajasthan.
+I am **Hari Khatri**, a Bachelor of Computer Applications (BCA) student (3rd Semester) at **Adarsh College of Professional Studies**, Abu Road (affiliated with Mohanlal Sukhadia University / MLSU Udaipur), based in Mount Abu, Rajasthan.
 
-My engineering journey bridges low-level systems programming in **C, C++, and Java** with modern, interactive web applications built with **React 19, TypeScript, Vite, and Tailwind CSS**.
+My engineering journey bridges low-level systems programming in **C, C++, and Java** with modern, interactive web applications built with **React 19, TypeScript, Next.js, Vite, and Tailwind CSS**.
 
 ---
 
 ## 🚀 Live & Featured Projects Showcase
 
+All 8 GitHub repositories and all verified live deployments:
+
 | Project | Category | Tech Stack | Live Demo | Repository |
 | :--- | :--- | :--- | :---: | :---: |
-| **Silicon Dynasty** | Web Simulation | React 19, TypeScript, Vite, Tailwind CSS | [Explore Live Demo](https://hariacharyakhatri.github.io/Silicon-Dynasty/) | [GitHub](https://github.com/HariAcharyaKhatri/Silicon-Dynasty) |
-| **CALIGO** | Browser MMORPG | JavaScript, Canvas, Web Audio, LocalStorage | [Play Live Demo](https://hariacharyakhatri.github.io/Caligo/) | [GitHub](https://github.com/HariAcharyaKhatri/Caligo) |
-| **Morph** | AI CLI Tool | TypeScript, Next.js, Node.js CLI, Tailwind | *CLI Utility* | [GitHub](https://github.com/HariAcharyaKhatri/Morph) |
-| **Luminary IDE** | Desktop Software | Java, Swing / AWT, Process Streams, Syntax Parser | *Desktop Software* | [Profile](https://github.com/HariAcharyaKhatri) |
-| **Ancient Chaturanga** | Game Engine | C++, Board Matrices, Discrete Algorithms | *Systems Logic* | [Profile](https://github.com/HariAcharyaKhatri) |
-| **Tiger Gambit** | Game Engine | Game Logic, Tactical State Machines | *Systems Logic* | [Profile](https://github.com/HariAcharyaKhatri) |
+| **BranchVerse** | Interactive Storytelling | TypeScript, React, Next.js, AI, Vercel | [Live App (Vercel)](https://branch-verse.vercel.app) | [GitHub](https://github.com/HariAcharyaKhatri/BranchVerse) |
+| **Silicon Dynasty** | Web Simulation | React 19, TypeScript, Vite 6, Tailwind CSS | [Live App (GH Pages)](https://hariacharyakhatri.github.io/Silicon-Dynasty/) | [GitHub](https://github.com/HariAcharyaKhatri/Silicon-Dynasty) |
+| **Chess-Review** | Chess Analytics & Stockfish | React 18, TypeScript 5, Vite 6, Stockfish WASM | [Live App (GH Pages)](https://hariacharyakhatri.github.io/Chess-Review/) | [GitHub](https://github.com/HariAcharyaKhatri/Chess-Review) |
+| **CALIGO** | Browser MMORPG | JavaScript, Canvas, Web Audio, LocalStorage | [Play Game (GH Pages)](https://hariacharyakhatri.github.io/Caligo/) | [GitHub](https://github.com/HariAcharyaKhatri/Caligo) |
+| **Bagh-Chal: TIGER-GAMBIT** | Himalayan Strategy Game | JavaScript, HTML5 Canvas, SVG Vector Design | [Play Game (GH Pages)](https://hariacharyakhatri.github.io/TIGER-GAMBIT/) | [GitHub](https://github.com/HariAcharyaKhatri/TIGER-GAMBIT) |
+| **Luminary IDE** | Desktop Text Editor & IDE | Java, Swing / AWT, Process Streams, Parser | *Desktop Application* | [GitHub](https://github.com/HariAcharyaKhatri/LuminaryIDE) |
+| **Morph** | AI Next.js CLI Scaffolder | TypeScript, Next.js, Node.js CLI, Tailwind | *CLI Utility* | [GitHub](https://github.com/HariAcharyaKhatri/Morph) |
+| **Portfolio** | Developer Portfolio | HTML5, CSS3 Glassmorphism, Three.js, Vanilla JS | [Live Site (GH Pages)](https://hariacharyakhatri.github.io/Portfolio/) | [GitHub](https://github.com/HariAcharyaKhatri/Portfolio) |
+| **Ancient Chaturanga** | C++ Chess Engine | C++, Board Matrices, Discrete Algorithms | *Systems Engine* | [Profile](https://github.com/HariAcharyaKhatri) |
 | **Student Record System** | Core Software | C, Direct Binary File I/O (`fread`/`fwrite`) | *Core Software* | [Profile](https://github.com/HariAcharyaKhatri) |
-| **Library DBMS** | Relational DB | SQL, Relational DBMS, 3NF Normalization | *Database Schema* | [Profile](https://github.com/HariAcharyaKhatri) |
+| **Library DBMS** | Relational Database | SQL, Relational DBMS, 3NF Normalization | *Database Schema* | [Profile](https://github.com/HariAcharyaKhatri) |
 
 ---
 
 ## 🛠️ Technical Arsenal
 
 - **Languages:** C, C++, Java, TypeScript, JavaScript (ES6+), SQL
-- **Frontend & Web:** React 19, Vite, Tailwind CSS, HTML5 Canvas, Web Audio API, CSS3 Glassmorphism
-- **Systems & Architecture:** Relational DBMS (3NF Normalization), Memory Management, Data Structures, Algorithms, State Machines, Binary File Streams
-- **Developer Tools:** Git, GitHub, GitHub Pages, VS Code, PowerShell, Bash, Process Streams, Tally ERP.9
+- **Frontend & Web:** React 19, Next.js, Vite, Tailwind CSS, HTML5 Canvas, Web Audio API, Stockfish WASM, CSS3 Glassmorphism
+- **Systems & Architecture:** Relational DBMS (3NF Normalization), Memory Management, Data Structures, Algorithms, Game State Machines, Binary File Streams
+- **Developer Tools:** Git, GitHub, GitHub Pages, Vercel, VS Code, PowerShell, Bash, Process Streams, Tally ERP.9
 
 ---
 
@@ -71,7 +76,7 @@ To add or update a project, simply open [`js/projects-data.js`](js/projects-data
     status: "live", // 'live' | 'repo' | 'code'
     icon: "cpu", // Any Lucide icon name
     isLive: true,
-    liveUrl: "https://hariacharyakhatri.github.io/Your-Repo/",
+    liveUrl: "https://your-deployment-url.com",
     githubUrl: "https://github.com/HariAcharyaKhatri/Your-Repo",
     description: "Detailed description of what you engineered...",
     highlights: [
@@ -111,7 +116,7 @@ This portfolio is configured for zero-build deployment via GitHub Pages:
 1. Push changes to the `main` branch:
    ```bash
    git add .
-   git commit -m "Update portfolio redesign"
+   git commit -m "Update portfolio with all GitHub repos and verified live links"
    git push origin main
    ```
 2. In the GitHub repository settings:

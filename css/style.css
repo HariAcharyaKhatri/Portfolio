@@ -803,6 +803,12 @@ section#hero {
 .preview-silicon {
     background: radial-gradient(circle at 70% 30%, #1e3a8a 0%, #0c152d 70%, #060913 100%);
 }
+.preview-branchverse {
+    background: radial-gradient(circle at 65% 35%, #701a75 0%, #2e0854 60%, #060913 100%);
+}
+.preview-chessreview {
+    background: radial-gradient(circle at 35% 65%, #065f46 0%, #062a22 60%, #060913 100%);
+}
 .preview-caligo {
     background: radial-gradient(circle at 30% 70%, #4c0519 0%, #17050e 70%, #060913 100%);
 }
